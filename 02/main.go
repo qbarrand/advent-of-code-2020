@@ -41,18 +41,6 @@ func (p *policy1) isPasswordValid(pw string) bool {
 }
 
 func main() {
-	if len(os.Args) != 2 {
-		log.Fatal("Argument required")
-	}
-
-	inputFilename := os.Args[1]
-
-	fd, err := os.Open(inputFilename)
-	if err != nil {
-		log.Fatalf("Could not open %q: %v", inputFilename, err)
-	}
-	defer fd.Close()
-
 	re, err := regexp.Compile(`(\d+)-(\d+)\s([[:lower:]]):\s([[:lower:]]+)`)
 	if err != nil {
 		log.Fatalf("Could not compile the regex: %v", err)
@@ -67,9 +55,7 @@ func main() {
 
 	i := 1
 
-	r := bufio.NewReader(fd)
-
-	log.Printf("Reading %s", inputFilename)
+	r := bufio.NewReader(os.Stdin)
 
 	eof := false
 
@@ -84,8 +70,6 @@ func main() {
 		}
 
 		line = strings.TrimSuffix(line, "\n")
-
-		log.Printf("Reading line %d: %q", i, line)
 
 		matches := re.FindStringSubmatch(line)
 		if len(matches) != 5 {

@@ -55,18 +55,6 @@ func countTrees(r io.ReadSeeker, s *slope) (int, error) {
 }
 
 func main() {
-	if len(os.Args) != 2 {
-		log.Fatal("Argument required")
-	}
-
-	inputFilename := os.Args[1]
-
-	fd, err := os.Open(inputFilename)
-	if err != nil {
-		log.Fatalf("Could not open %q: %v", inputFilename, err)
-	}
-	defer fd.Close()
-
 	slopes := []*slope{
 		{incX: 1, incY: 1},
 		{incX: 3, incY: 1},
@@ -78,7 +66,9 @@ func main() {
 	trees := 1
 
 	for _, s := range slopes {
-		t, err := countTrees(fd, s)
+		// countTrees calls Seek(0) on the file.
+		// This works only if the file is seekable - when stdin is redirected from a regular file.
+		t, err := countTrees(os.Stdin, s)
 		if err != nil {
 			log.Fatalf("Could not count trees: %v", err)
 		}

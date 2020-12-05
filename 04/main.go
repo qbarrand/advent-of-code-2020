@@ -109,27 +109,18 @@ func (p passport) Valid1() bool {
 }
 
 func main() {
-	if len(os.Args) != 2 {
-		log.Fatal("Argument required")
-	}
-
-	inputFilename := os.Args[1]
-
-	fd, err := os.Open(inputFilename)
-	if err != nil {
-		log.Fatalf("Could not open %q: %v", inputFilename, err)
-	}
-	defer fd.Close()
-
 	valid0 := 0
 	valid1 := 0
 
 	i := 0
 
-	var line string
+	var (
+		err  error
+		line string
+	)
 
 	eof := false
-	r := bufio.NewReader(fd)
+	r := bufio.NewReader(os.Stdin)
 
 	p := passport{}
 
