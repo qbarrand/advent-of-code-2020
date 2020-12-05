@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"sort"
 )
 
 const (
@@ -14,29 +15,53 @@ const (
 )
 
 func findSeat(totalRows, totalColumns int, input string) (int, int) {
-	return 0, 0
+	low := 0
+	up := totalRows - 1
+	row := 0
+
+	for _, c := range input[:7] {
+		midPoint := low + (up-low)/2
+
+		switch c {
+		case 'F':
+			up = midPoint
+			row = low
+		case 'B':
+			low = midPoint + 1
+			row = up
+		}
+	}
+
+	column := 0
+
+	left := 0
+	right := totalColumns - 1
+
+	for _, c := range input[7:] {
+		midPoint := left + (right-left)/2
+
+		switch c {
+		case 'L':
+			right = midPoint
+			column = left
+		case 'R':
+			left = midPoint + 1
+			column = right
+		}
+	}
+
+	return row, column
 }
 
 func main() {
-	if len(os.Args) != 2 {
-		log.Fatal("Argument required")
-	}
-
-	inputFilename := os.Args[1]
-
-	fd, err := os.Open(inputFilename)
-	if err != nil {
-		log.Fatalf("Could not open %q: %v", inputFilename, err)
-	}
-	defer fd.Close()
-
 	i := 0
-	max := 0
+	maxID := 0
 
 	var line string
+	ids := make([]int, 0)
 
 	for {
-		if _, err := fmt.Fscanln(fd, &line); err != nil {
+		if _, err := fmt.Fscanln(os.Stdin, &line); err != nil {
 			if !errors.Is(err, io.EOF) {
 				log.Fatalf("line %d: %v", i, err)
 			}
@@ -46,12 +71,29 @@ func main() {
 
 		r, c := findSeat(rows, columns, line)
 
-		s := r*8 + c
+		id := r*8 + c
 
-		if s > max {
-			max = s
+		ids = append(ids, id)
+
+		if id > maxID {
+			maxID = id
 		}
 	}
 
-	log.Printf("Max: %d", max)
+	// Part 1
+	log.Printf("Max ID: %d", maxID)
+
+	// Part 2
+	sort.Ints(ids)
+
+	for i := 0; i < len(ids)-1; i++ {
+		current := ids[i]
+
+		if ids[i+1] == current+2 {
+			log.Printf("My seat ID: %d", current+1)
+			return
+		}
+	}
+
+	log.Fatal("ID not found :(")
 }
