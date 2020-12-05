@@ -1,8 +1,8 @@
 package main
 
 import (
+	"bufio"
 	"errors"
-	"fmt"
 	"io"
 	"log"
 	"os"
@@ -57,11 +57,14 @@ func main() {
 	i := 0
 	maxID := 0
 
-	var line string
 	ids := make([]int, 0)
+	buf := make([]byte, 10)
+
+	r := bufio.NewReader(os.Stdin)
 
 	for {
-		if _, err := fmt.Fscanln(os.Stdin, &line); err != nil {
+		// Read the 10 characters per line
+		if _, err := io.ReadFull(r, buf); err != nil {
 			if !errors.Is(err, io.EOF) {
 				log.Fatalf("line %d: %v", i, err)
 			}
@@ -69,15 +72,22 @@ func main() {
 			break
 		}
 
-		r, c := findSeat(rows, columns, line)
+		// Read the new line
+		if _, err := r.ReadByte(); err != nil && !errors.Is(err, io.EOF) {
+			log.Fatalf("Could not read the new line: %v", err)
+		}
 
-		id := r*8 + c
+		rows, columns := findSeat(rows, columns, string(buf))
+
+		id := rows*8 + columns
 
 		ids = append(ids, id)
 
 		if id > maxID {
 			maxID = id
 		}
+
+		i++
 	}
 
 	// Part 1
