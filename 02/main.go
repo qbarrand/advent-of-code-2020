@@ -2,8 +2,6 @@ package main
 
 import (
 	"bufio"
-	"errors"
-	"io"
 	"log"
 	"os"
 	"regexp"
@@ -55,23 +53,14 @@ func main() {
 
 	i := 1
 
-	r := bufio.NewReader(os.Stdin)
+	s := bufio.NewScanner(os.Stdin)
 
-	eof := false
-
-	for !eof {
-		line, err := r.ReadString('\n')
-		if err != nil {
-			if !errors.Is(err, io.EOF) {
-				log.Fatalf("Line %d: %v", i, err)
-			}
-
-			eof = true
+	for s.Scan() {
+		if err := s.Err(); err != nil {
+			log.Fatalf("Line %d: %v", i, err)
 		}
 
-		line = strings.TrimSuffix(line, "\n")
-
-		matches := re.FindStringSubmatch(line)
+		matches := re.FindStringSubmatch(s.Text())
 		if len(matches) != 5 {
 			log.Fatalf("Line %d: expected 4 matches, found %d: %v", i, len(matches), matches)
 		}

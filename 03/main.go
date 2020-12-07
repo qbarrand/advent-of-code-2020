@@ -1,7 +1,7 @@
 package main
 
 import (
-	"errors"
+	"bufio"
 	"fmt"
 	"io"
 	"log"
@@ -16,11 +16,7 @@ func (s *slope) String() string {
 	return fmt.Sprintf("right %d, down %d", s.incX, s.incY)
 }
 
-func countTrees(r io.ReadSeeker, s *slope) (int, error) {
-	if _, err := r.Seek(0, io.SeekStart); err != nil {
-		return 0, fmt.Errorf("could not seek: %v", err)
-	}
-
+func countTrees(sc *bufio.Scanner, s *slope) (int, error) {
 	nextX := 0
 	nextY := 0
 
@@ -28,16 +24,12 @@ func countTrees(r io.ReadSeeker, s *slope) (int, error) {
 
 	i := 0
 
-	var line string
-
-	for {
-		if _, err := fmt.Fscanln(r, &line); err != nil {
-			if !errors.Is(err, io.EOF) {
-				return 0, fmt.Errorf("line %d: %v", i, err)
-			}
-
-			break
+	for sc.Scan() {
+		if err := sc.Err(); err != nil {
+			return 0, fmt.Errorf("line %d: %v", i, err)
 		}
+
+		line := sc.Text()
 
 		if i == nextY {
 			if line[nextX%len(line)] == '#' {
@@ -65,10 +57,15 @@ func main() {
 
 	trees := 1
 
+	fd := os.Stdin
+
 	for _, s := range slopes {
-		// countTrees calls Seek(0) on the file.
 		// This works only if the file is seekable - when stdin is redirected from a regular file.
-		t, err := countTrees(os.Stdin, s)
+		if _, err := fd.Seek(0, io.SeekStart); err != nil {
+			log.Fatalf("Could not seek: %v", err)
+		}
+
+		t, err := countTrees(bufio.NewScanner(fd), s)
 		if err != nil {
 			log.Fatalf("Could not count trees: %v", err)
 		}
