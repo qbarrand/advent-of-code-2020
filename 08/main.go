@@ -100,21 +100,17 @@ func fixProgram(instructions []*instruction, i int, executed []bool, changeAllow
 			if n, err := fixProgram(instructions, i+1, cloneSlice(executed), false); err == nil {
 				return n, err
 			}
-
-			return fixProgram(instructions, i+in.argument, cloneSlice(executed), true)
 		}
 
-		return fixProgram(instructions, i+in.argument, cloneSlice(executed), false)
+		return fixProgram(instructions, i+in.argument, cloneSlice(executed), changeAllowed)
 	case "nop":
 		if changeAllowed {
 			if n, err := fixProgram(instructions, i+in.argument, cloneSlice(executed), false); err == nil {
 				return n, err
 			}
-
-			return fixProgram(instructions, i+1, cloneSlice(executed), true)
 		}
 
-		return fixProgram(instructions, i+1, cloneSlice(executed), false)
+		return fixProgram(instructions, i+1, cloneSlice(executed), changeAllowed)
 	default:
 		return 0, fmt.Errorf("%d: operation %q not understood", i, in.operation)
 	}
