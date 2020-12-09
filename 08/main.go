@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"os"
 )
 
 var errLoop = errors.New("loop")
@@ -27,7 +26,7 @@ func main() {
 	for {
 		in := instruction{}
 
-		if _, err := fmt.Fscanf(os.Stdin, "%s %d", &in.operation, &in.argument); err != nil {
+		if _, err := fmt.Scanf("%s %d", &in.operation, &in.argument); err != nil {
 			if !errors.Is(err, io.EOF) {
 				log.Fatalf("Line %d: %v", i, err)
 			}

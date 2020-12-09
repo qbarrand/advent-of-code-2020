@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"os"
 )
 
 func main() {
@@ -14,7 +13,7 @@ func main() {
 	var currentInt int
 
 	for {
-		if _, err := fmt.Fscanf(os.Stdin, "%d\n", &currentInt); err != nil {
+		if _, err := fmt.Scanf("%d", &currentInt); err != nil {
 			if !errors.Is(err, io.EOF) {
 				log.Fatalf("Error while reading the input: %v", err)
 			}
