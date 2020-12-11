@@ -1,6 +1,7 @@
 package main
 
 import (
+	"container/ring"
 	"errors"
 	"fmt"
 	"io"
@@ -12,22 +13,11 @@ const (
 	NotFound = -1
 )
 
-func canSumTo(elems [N]int, sum int) bool {
-	for i := 0; i < N-1; i++ {
-		for j := i + 1; j < N; j++ {
-			if elems[i]+elems[j] == sum {
-				return true
-			}
-		}
-	}
-
-	return false
-}
-
 func main() {
 	i := 0
 
-	numbers := [N]int{}
+	r := ring.New(N)
+	m := make(map[int]int)
 
 	part1 := NotFound
 
@@ -42,13 +32,28 @@ func main() {
 			break
 		}
 
-		if i >= N && !canSumTo(numbers, v) {
-			part1 = v
-			break
+		if i >= N {
+			canSum := false
+
+			for p := r.Next(); p != r; p = p.Next() {
+				if m[v-p.Value.(int)] > 0 {
+					canSum = true
+					break
+				}
+			}
+
+			if !canSum {
+				part1 = v
+				break
+			}
+
+			m[r.Value.(int)]--
 		}
 
-		numbers[i%N] = v
+		r.Value = v
+		m[v]++
 
+		r = r.Prev()
 		i++
 	}
 
