@@ -22,9 +22,7 @@ func countTrees(sc *bufio.Scanner, s *slope) (int, error) {
 
 	trees := 0
 
-	i := 0
-
-	for sc.Scan() {
+	for i := 0; sc.Scan(); i++ {
 		if err := sc.Err(); err != nil {
 			return 0, fmt.Errorf("line %d: %v", i, err)
 		}
@@ -39,8 +37,6 @@ func countTrees(sc *bufio.Scanner, s *slope) (int, error) {
 			nextX += s.incX
 			nextY += s.incY
 		}
-
-		i++
 	}
 
 	return trees, nil

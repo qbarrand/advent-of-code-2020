@@ -21,9 +21,8 @@ func (i *instruction) reset() {
 
 func main() {
 	instructions := make([]*instruction, 0)
-	i := 0
 
-	for {
+	for i := 0; ; i++ {
 		in := instruction{}
 
 		if _, err := fmt.Scanf("%s %d", &in.operation, &in.argument); err != nil {
@@ -35,8 +34,6 @@ func main() {
 		}
 
 		instructions = append(instructions, &in)
-
-		i++
 	}
 
 	log.Printf("Part 1: acc: %d", findLoop(instructions))
@@ -56,9 +53,8 @@ func main() {
 // part 1
 func findLoop(instructions []*instruction) int {
 	acc := 0
-	i := 0
 
-	for i < len(instructions) {
+	for i := 0; i < len(instructions); i++ {
 		in := instructions[i]
 
 		if in.executed {
@@ -78,8 +74,6 @@ func findLoop(instructions []*instruction) int {
 		default:
 			log.Fatalf("Instruction %d: unhandled operation %q", i, in.operation)
 		}
-
-		i++
 	}
 
 	return acc

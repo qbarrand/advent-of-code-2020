@@ -51,11 +51,9 @@ func main() {
 	p0 := policy0{policy: &basePolicy}
 	p1 := policy1{policy: &basePolicy}
 
-	i := 1
-
 	s := bufio.NewScanner(os.Stdin)
 
-	for s.Scan() {
+	for i := 1; s.Scan(); i++ {
 		if err := s.Err(); err != nil {
 			log.Fatalf("Line %d: %v", i, err)
 		}
@@ -85,8 +83,6 @@ func main() {
 		if p1.isPasswordValid(matches[4]) {
 			policy1Valid++
 		}
-
-		i++
 	}
 
 	log.Printf("Policy 0: %d valid passwords", policy0Valid)

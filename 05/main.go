@@ -54,7 +54,6 @@ func findSeat(totalRows, totalColumns int, input string) (int, int) {
 }
 
 func main() {
-	i := 0
 	maxID := 0
 
 	ids := make([]int, 0)
@@ -62,7 +61,7 @@ func main() {
 
 	r := bufio.NewReader(os.Stdin)
 
-	for {
+	for i := 0; ; i++ {
 		// Read the 10 characters per line
 		if _, err := io.ReadFull(r, buf); err != nil {
 			if !errors.Is(err, io.EOF) {
@@ -86,8 +85,6 @@ func main() {
 		if id > maxID {
 			maxID = id
 		}
-
-		i++
 	}
 
 	// Part 1

@@ -54,11 +54,10 @@ func (bc bagCollection) containingBagsRecurse(color, recurseFrom string) bool {
 
 func main() {
 	s := bufio.NewScanner(os.Stdin)
-	i := 0
 
 	bags := make(bagCollection, 0)
 
-	for s.Scan() {
+	for i := 0; s.Scan(); i++ {
 		if err := s.Err(); err != nil {
 			log.Fatalf("Line %d: %v", i, err)
 		}
@@ -85,8 +84,6 @@ func main() {
 				j += 4
 			}
 		}
-
-		i++
 	}
 
 	searchedColor := "shiny gold"

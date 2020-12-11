@@ -112,8 +112,6 @@ func main() {
 	valid0 := 0
 	valid1 := 0
 
-	i := 0
-
 	var (
 		err  error
 		line string
@@ -124,7 +122,7 @@ func main() {
 
 	p := passport{}
 
-	for !eof {
+	for i := 0; !eof; i++ {
 		if line, err = r.ReadString('\n'); err != nil {
 			if !errors.Is(err, io.EOF) {
 				log.Fatalf("Line %d: %v", i, err)
@@ -161,8 +159,6 @@ func main() {
 
 			continue
 		}
-
-		i++
 	}
 
 	log.Printf("Part 1: %d valid passports", valid0)

@@ -25,7 +25,6 @@ type group = map[rune]bool
 
 func main() {
 	eof := false
-	i := 0
 	r := bufio.NewReader(os.Stdin)
 
 	// For part 1
@@ -37,7 +36,7 @@ func main() {
 	part1Yeses := 0
 	part2Yeses := 0
 
-	for !eof {
+	for i := 0; !eof; i++ {
 		line, err := r.ReadString('\n')
 		if err != nil {
 			if !errors.Is(err, io.EOF) {
@@ -73,8 +72,6 @@ func main() {
 			part2Yeses += len(s)
 			s = nil
 		}
-
-		i++
 	}
 
 	log.Printf("Part 1 count sum: %d", part1Yeses)
