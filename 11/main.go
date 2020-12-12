@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"errors"
-	"fmt"
 	"io"
 	"log"
 	"os"
@@ -45,39 +44,7 @@ func applyNextState(l []*seat) {
 	}
 }
 
-func main() {
-	r := bufio.NewReader(os.Stdin)
-	eof := false
-
-	lines := make([][]*seat, 0)
-	line := make([]*seat, 0)
-
-	for i := 0; !eof; i++ {
-		c, _, err := r.ReadRune()
-		if err != nil {
-			if !errors.Is(err, io.EOF) {
-				log.Fatalf("Line %d: %v", i, err)
-			}
-
-			eof = true
-		}
-
-		if c == '\n' || eof {
-			lines = append(lines, line)
-			line = make([]*seat, 0)
-		} else {
-			line = append(line, &seat{state: c, nextState: c})
-		}
-	}
-
-	for _, l := range lines {
-		for _, s := range l {
-			fmt.Printf("%c", s.state)
-		}
-
-		fmt.Print("\n")
-	}
-
+func part1(lines [][]*seat) int {
 	var totalOccupied int
 
 	for {
@@ -120,5 +87,34 @@ func main() {
 		}
 	}
 
-	log.Printf("Total occupied: %d", totalOccupied)
+	return totalOccupied
+}
+
+func main() {
+	r := bufio.NewReader(os.Stdin)
+	eof := false
+
+	lines := make([][]*seat, 0)
+	line := make([]*seat, 0)
+
+	for i := 0; !eof; i++ {
+		c, _, err := r.ReadRune()
+		if err != nil {
+			if !errors.Is(err, io.EOF) {
+				log.Fatalf("Line %d: %v", i, err)
+			}
+
+			eof = true
+		}
+
+		if c == '\n' || eof {
+			lines = append(lines, line)
+			line = make([]*seat, 0)
+		} else {
+			line = append(line, &seat{state: c, nextState: c})
+		}
+	}
+
+	log.Printf("Part 1: %d occupied seats", part1(lines))
+	log.Printf("Part 2: %d occupied seats", part2(lines))
 }
