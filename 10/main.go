@@ -42,4 +42,32 @@ func main() {
 	}
 
 	log.Printf("Part 1: %d", diff1*diff3)
+
+	log.Printf(
+		"Part 2: %d",
+		findCombinations(append([]int{0}, adapters...), 0),
+	)
+}
+
+var cache map[int]int = make(map[int]int)
+
+func findCombinations(s []int, idx int) int {
+	if c, ok := cache[idx]; ok {
+		return c
+	}
+
+	max := s[len(s)-1] + 3
+	ret := 0
+
+	if max-s[idx] <= 3 {
+		ret += 1
+	}
+
+	for i := idx + 1; i < len(s) && s[i]-s[idx] <= 3; i++ {
+		ret += findCombinations(s, i)
+	}
+
+	cache[idx] = ret
+
+	return ret
 }
